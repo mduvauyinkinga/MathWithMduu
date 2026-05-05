@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MathWithMDU - Grade 10-12 Mathematical Literacy</title>
+  <link rel="stylesheet" href="styles.css">
+  <script type="module" src="app.js" defer></script>
+</head>
+<body>
+  <nav class="navbar">
+    <div class="nav-container">
+      <div class="logo">📐 MathWithMDU</div>
+      <ul class="nav-links">
+        <li><a href="#home">Home</a></li>
+        <li><a href="plans.html">Plans</a></li>
+        <li><a href="contact.html">Contact</a></li>
+        <li><a href="#dashboard" id="dashboardLink" class="hidden">Dashboard</a></li>
+      </ul>
+      <div class="auth-btns">
+        <button id="loginBtn" class="btn btn-secondary">Login</button>
+        <button id="registerBtn" class="btn btn-primary">Register</button>
+        <button id="logoutBtn" class="hidden" class="btn btn-secondary">Logout</button>
+      </div>
+    </div>
+  </nav>
+
+  <section id="home" class="hero">
+    <div class="container">
+      <h1>Master Mathematical Literacy</h1>
+      <p>Grade 10-12 CAPS curriculum. Past papers, custom lessons, 1-on-1 tutoring. Trial available!</p>
+      <div class="cta-buttons">
+        <a href="#register" id="registerModalBtn" class="btn btn-primary">Start Free Trial</a>
+        <a href="plans.html" class="btn btn-secondary">View Plans</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Register Modal -->
+  <div id="registerModal" class="modal hidden">
+    <div class="modal-content">
+      <span class="close">&amp;times;</span>
+      <h2>Start Your Free Trial</h2>
+      <form id="registerForm">
+        <div class="form-group">
+          <label>Full Name</label>
+          <input type="text" id="regName" required>
+        </div>
+        <div class="form-group">
+          <label>Email</label>
+          <input type="email" id="regEmail" required>
+        </div>
+        <div class="form-group">
+          <label>Password</label>
+          <input type="password" id="regPassword" required minlength="6">
+        </div>
+        <div class="form-group">
+          <label>Grade</label>
+          <select id="regGrade" required>
+            <option value="">Select Grade</option>
+            <option value="10">Grade 10</option>
+            <option value="11">Grade 11</option>
+            <option value="12">Grade 12</option>
+          </select>
+        </div>
+        <button type="submit" class="btn btn-primary">Create Trial Account</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Login Modal -->
+  <div id="loginModal" class="modal hidden">
+    <div class="modal-content">
+      <span class="close">&amp;times;</span>
+      <h2>Login</h2>
+      <form id="loginForm">
+        <div class="form-group">
+          <label>Email</label>
+          <input type="email" id="loginEmail" required>
+        </div>
+        <div class="form-group">
+          <label>Password</label>
+          <input type="password" id="loginPassword" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Login</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Loading -->
+  <div id="loading" class="loading hidden">
+    <div class="spinner"></div>
+  </div>
+
+  <!-- Alerts -->
+  <div id="alertContainer"></div>
+
+  <footer class="footer">
+    <div class="container">
+      <h3>Get in Touch</h3>
+      <p>Email: dnmduduzi@gmail.com</p>
+      <a href="https://wa.me/27637919877" class="contact-btn" target="_blank">
+        📱 WhatsApp/Call: 0637919877
+      </a>
+      <p style="margin-top: 2rem; opacity: 0.8;">&amp;copy; 2024 MathWithMDU. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script type="module">
+    // Modal CSS will be added via JS
+    const modalCSS = `
+      .modal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.5);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 1500;
+      }
+      .modal-content {
+        background: white;
+        padding: 2rem;
+        border-radius: 20px;
+        max-width: 500px;
+        width: 90%;
+        max-height: 90vh;
+        overflow-y: auto;
+        position: relative;
+      }
+      .close {
+        position: absolute;
+        right: 1.5rem;
+        top: 1.5rem;
+        font-size: 2rem;
+        cursor: pointer;
+        color: #999;
+      }
+      .close:hover {
+        color: #333;
+      }
+    `;
+    const style = document.createElement('style');
+    style.textContent = modalCSS;
+    document.head.appendChild(style);
+  </script>
+</body>
+</html>
+

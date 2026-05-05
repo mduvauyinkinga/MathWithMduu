@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin - MathWithMDU</title>
+  <link rel="stylesheet" href="styles.css">
+  <script type="module" src="admin.js" defer></script>
+</head>
+<body>
+  <nav class="navbar">
+    <div class="nav-container">
+      <div class="logo">📐 MathWithMDU Admin</div>
+      <ul class="nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="dashboard.html">Student Dashboard</a></li>
+      </ul>
+      <div class="auth-btns">
+        <span id="adminInfo"></span>
+        <button id="logoutBtn" class="btn btn-secondary">Logout</button>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container" style="padding-top: 120px;">
+    <div id="authSection" class="card">
+      <h1>Admin Panel</h1>
+      <p>Login with admin email to access</p>
+      <button id="adminLogin" class="btn btn-primary">Admin Login</button>
+    </div>
+
+    <div id="adminSection" class="hidden">
+      <div class="card">
+        <h2>Upload Lesson</h2>
+        <form id="lessonForm">
+          <div class="form-group">
+            <label>Title</label>
+            <input type="text" id="lessonTitle" required>
+          </div>
+          <div class="form-group">
+            <label>Grade</label>
+            <select id="lessonGrade" required>
+              <option value="10">Grade 10</option>
+              <option value="11">Grade 11</option>
+              <option value="12">Grade 12</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Term (1-4)</label>
+            <input type="number" id="lessonTerm" min="1" max="4" required>
+          </div>
+          <div class="form-group">
+            <label>Week</label>
+            <input type="number" id="lessonWeek" required>
+          </div>
+          <div class="form-group">
+            <label>Topic</label>
+            <input type="text" id="lessonTopic" required>
+          </div>
+          <div class="form-group">
+            <label>Description</label>
+            <textarea id="lessonDesc" rows="3" required></textarea>
+          </div>
+          <div class="form-group">
+            <label>File URL (Storage link)</label>
+            <input type="url" id="lessonURL" required>
+          </div>
+          <div class="form-group">
+            <label>Free Access?</label>
+            <input type="checkbox" id="lessonFree">
+          </div>
+          <button type="submit" class="btn btn-primary">Upload Lesson</button>
+        </form>
+      </div>
+
+      <div class="card">
+        <h2>Upload Past Paper</h2>
+        <form id="paperForm">
+          <div class="form-group">
+            <label>Title</label>
+            <input type="text" id="paperTitle" required>
+          </div>
+          <div class="form-group">
+            <label>Grade</label>
+            <select id="paperGrade" required>
+              <option value="10">Grade 10</option>
+              <option value="11">Grade 11</option>
+              <option value="12">Grade 12</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Topic (links to lesson)</label>
+            <input type="text" id="paperTopic" required>
+          </div>
+          <div class="form-group">
+            <label>File URL</label>
+            <input type="url" id="paperURL" required>
+          </div>
+          <div class="form-group">
+            <label>Free?</label>
+            <input type="checkbox" id="paperFree">
+          </div>
+          <button type="submit" class="btn btn-primary">Upload Paper</button>
+        </form>
+      </div>
+
+      <div class="card">
+        <h2>📁 File Upload</h2>
+        <form id="uploadForm">
+          <div class="form-group">
+            <label>File Title</label>
+            <input type="text" id="fileTitle" required>
+          </div>
+          <div class="form-group">
+            <label>Select File</label>
+            <input type="file" id="fileInput" required>
+          </div>
+          <button type="submit" class="btn btn-primary">Upload File</button>
+        </form>
+      </div>
+
+      <div class="card">
+        <h2>Post Announcement</h2>
+        <form id="announceForm">
+          <div class="form-group">
+            <label>Message</label>
+            <textarea id="announceMsg" rows="4" required></textarea>
+          </div>
+          <div class="form-group">
+            <label>Grade (or 'all')</label>
+            <input type="text" id="announceGrade" value="all">
+          </div>
+          <div class="form-group">
+            <label>Meeting Link</label>
+            <input type="url" id="announceLink">
+          </div>
+          <div class="form-group">
+            <label>Important?</label>
+            <input type="checkbox" id="announceImportant">
+          </div>
+          <button type="submit" class="btn btn-primary">Post</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <div class="container">
+      <a href="https://wa.me/27637919877" class="contact-btn">Admin Support</a>
+    </div>
+  </footer>
+</body>
+</html>
+
