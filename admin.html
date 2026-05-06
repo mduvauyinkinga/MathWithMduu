@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin - MathWithMDU</title>
+  <link rel="stylesheet" href="styles.css">
+  <!-- Local Font Awesome (self-hosted to avoid third-party tracking/storage blocking warnings) -->
+  <link rel="stylesheet" href="assets/vendor/font-awesome/all.min.css" />
+  <script type="module" src="admin.js" defer></script>
+
+  <script src="navbar.js" defer></script>
+</head>
+<body>
+  <nav class="navbar">
+    <div class="nav-container">
+      <div class="logo"><i class="fa-solid fa-drafting-compass mdu-icon" aria-hidden="true"></i>MathWithMDU Admin</div>
+      <div class="nav-wrapper">
+        <ul class="nav-links">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="dashboard.html">Student Dashboard</a></li>
+        </ul>
+        <div class="mobile-menu">
+          <ul class="nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="dashboard.html">Student Dashboard</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="hamburger">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+      <div class="menu-overlay"></div>
+      <div class="auth-btns">
+        <span id="adminInfo"></span>
+        <button id="logoutBtn" class="btn btn-secondary">Logout</button>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container" style="padding-top: 120px;">
+    <div id="authSection" class="card">
+      <h1>Admin Panel</h1>
+      <p>Login with admin email to access</p>
+      <button id="adminLogin" class="btn btn-primary">Admin Login</button>
+    </div>
+
+    <div id="adminSection" class="hidden">
+      <div class="card">
+      <h2>Upload Lesson</h2>
+        <form id="lessonForm">
+          <div class="form-group">
+            <!-- FIX: Associate label with input for accessibility -->
+            <label for="lessonTitle">Title</label>
+            <input type="text" id="lessonTitle" required>
+          </div>
+          <div class="form-group">
+            <!-- FIX: Associate label with input for accessibility -->
+            <label for="lessonGrade">Grade</label>
+            <select id="lessonGrade" required>
+              <option value="10">Grade 10</option>
+              <option value="11">Grade 11</option>
+              <option value="12">Grade 12</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <!-- FIX: Associate label with input for accessibility -->
+            <label for="lessonTerm">Term (1-4)</label>
+            <input type="number" id="lessonTerm" min="1" max="4" required>
+          </div>
+          <div class="form-group">
+            <!-- FIX: Associate label with input for accessibility -->
+            <label for="lessonWeek">Week</label>
+            <input type="number" id="lessonWeek" required>
+          </div>
+          <div class="form-group">
+            <!-- FIX: Associate label with input for accessibility -->
+            <label for="lessonTopic">Topic</label>
+            <input type="text" id="lessonTopic" required>
+          </div>
+          <div class="form-group">
+            <!-- FIX: Associate label with textarea for accessibility -->
+            <label for="lessonDesc">Description</label>
+            <textarea id="lessonDesc" rows="3" required></textarea>
+          </div>
+          <div class="form-group">
+            <!-- FIX: Associate label with input for accessibility -->
+            <label for="lessonURL">File URL (Storage link)</label>
+            <input type="url" id="lessonURL" required>
+          </div>
+          <div class="form-group">
+            <!-- FIX: Associate label with checkbox input for accessibility -->
+            <label for="lessonFree">Free Access?</label>
+            <input type="checkbox" id="lessonFree">
+          </div>
+          <button type="submit" class="btn btn-primary">Upload Lesson</button>
+        </form>
+      </div>
+
+      <div class="card">
+        <h2>Upload Past Paper</h2>
+        <form id="paperForm">
+          <div class="form-group">
+            <!-- FIX: Associate label with input/select/textarea for accessibility -->
+            <label for="paperTitle">Title</label>
+            <input type="text" id="paperTitle" required>
+          </div>
+          <div class="form-group">
+            <label for="paperGrade">Grade</label>
+            <select id="paperGrade" required>
+              <option value="10">Grade 10</option>
+              <option value="11">Grade 11</option>
+              <option value="12">Grade 12</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="paperTopic">Topic (links to lesson)</label>
+            <input type="text" id="paperTopic" required>
+          </div>
+          <div class="form-group">
+            <label for="paperURL">File URL</label>
+            <input type="url" id="paperURL" required>
+          </div>
+
+          <div class="form-group">
+            <!-- FIX: Associate label with checkbox input for accessibility -->
+            <label for="paperFree">Free?</label>
+            <input type="checkbox" id="paperFree">
+          </div>
+          <button type="submit" class="btn btn-primary">Upload Paper</button>
+        </form>
+      </div>
+
+      <div class="card">
+        <h2><i class="fa-solid fa-folder-open mdu-icon" aria-hidden="true"></i>File Upload</h2>
+        <form id="uploadForm">
+          <div class="form-group">
+            <!-- FIX: Associate label with input for accessibility -->
+            <label for="fileTitle">File Title</label>
+            <input type="text" id="fileTitle" required>
+          </div>
+          <div class="form-group">
+            <label for="fileInput">Select File</label>
+            <input type="file" id="fileInput" required>
+          </div>
+
+          <button type="submit" class="btn btn-primary">Upload File</button>
+        </form>
+      </div>
+
+      <div class="card">
+        <h2>Post Announcement</h2>
+        <form id="announceForm">
+          <div class="form-group">
+            <label for="announceMsg">Message</label>
+            <textarea id="announceMsg" rows="4" required></textarea>
+          </div>
+          <div class="form-group">
+            <label for="announceGrade">Grade (or 'all')</label>
+            <input type="text" id="announceGrade" value="all">
+          </div>
+          <div class="form-group">
+            <label for="announceLink">Meeting Link</label>
+            <input type="url" id="announceLink">
+          </div>
+
+          <div class="form-group">
+            <!-- FIX: Associate label with checkbox input for accessibility -->
+            <label for="announceImportant">Important?</label>
+            <input type="checkbox" id="announceImportant">
+          </div>
+          <button type="submit" class="btn btn-primary">Post</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <div class="container">
+      <a href="https://wa.me/27637919877" class="contact-btn">Admin Support</a>
+
+      <!-- Footer legal links -->
+      <div style="margin-top: 1.5rem; display:flex; gap:1rem; justify-content:center; flex-wrap:wrap;">
+        <a href="terms.html" class="contact-btn" style="background: rgba(100,200,255,0.15); border: 1px solid rgba(100,200,255,0.4); padding: 0.8rem 1.2rem; font-size:0.95rem;">Terms &amp; Conditions</a>
+        <a href="privacy.html" class="contact-btn" style="background: rgba(100,200,255,0.15); border: 1px solid rgba(100,200,255,0.4); padding: 0.8rem 1.2rem; font-size:0.95rem;">Privacy Policy</a>
+        <a href="popia.html" class="contact-btn" style="background: rgba(100,200,255,0.15); border: 1px solid rgba(100,200,255,0.4); padding: 0.8rem 1.2rem; font-size:0.95rem;">POPIA</a>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>
+
