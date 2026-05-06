@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Plans - MathWithMDU</title>
+  <link rel="stylesheet" href="styles.css">
+  <!-- Local Font Awesome (self-hosted to avoid third-party tracking/storage blocking warnings) -->
+  <link rel="stylesheet" href="assets/vendor/font-awesome/all.min.css" />
+  <script src="https://js.paystack.co/v1/inline.js"></script>
+
+  <script type="module" src="plans.js" defer></script>
+  <script src="navbar.js" defer></script>
+</head>
+<body>
+  <nav class="navbar">
+    <div class="nav-container">
+      <div class="logo"><i class="fa-solid fa-drafting-compass mdu-icon" aria-hidden="true"></i>MathWithMDU</div>
+      <div class="nav-wrapper">
+        <ul class="nav-links">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="dashboard.html" id="dashboardLink" class="hidden">Dashboard</a></li>
+          <li><a href="contact.html">Contact</a></li>
+        </ul>
+        <div class="mobile-menu">
+          <ul class="nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="dashboard.html" id="dashboardLink" class="hidden">Dashboard</a></li>
+            <li><a href="contact.html">Contact</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="hamburger">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+      <div class="menu-overlay"></div>
+      <div class="auth-btns">
+        <button id="loginBtn" class="btn btn-secondary">Login</button>
+        <button id="registerBtn" class="btn btn-primary">Register</button>
+        <button id="logoutBtn" class="hidden" class="btn btn-secondary">Logout</button>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container" style="padding-top: 120px;">
+    <div class="card" style="text-align: center;">
+      <h1>Choose Your Plan</h1>
+      <p>Start with free trial, upgrade for full access</p>
+    </div>
+
+    <div class="card-grid">
+      <div class="plan-card">
+        <h3>Trial</h3>
+        <div style="font-size: 2rem; color: #28a745;">FREE</div>
+        <ul style="list-style: none; padding: 1rem 0;">
+          <li><i class="fa-solid fa-check mdu-icon" aria-hidden="true"></i>1 Lesson</li>
+
+          <li><i class="fa-solid fa-check mdu-icon" aria-hidden="true"></i>1 Past Paper</li>
+
+          <li><i class="fa-solid fa-xmark mdu-icon" aria-hidden="true"></i>No downloads</li>
+
+          <li><i class="fa-solid fa-xmark mdu-icon" aria-hidden="true"></i>No group classes</li>
+
+        </ul>
+        <button id="trialBtn" class="btn btn-primary" disabled>Active (via Register)</button>
+      </div>
+
+      <div class="plan-card popular">
+        <h3>Gold Plan</h3>
+        <div style="font-size: 2rem; color: #ffd700;">R250</div>
+        <ul style="list-style: none; padding: 1rem 0;">
+          <li><i class="fa-solid fa-check mdu-icon" aria-hidden="true"></i>Full lessons</li>
+
+          <li><i class="fa-solid fa-check mdu-icon" aria-hidden="true"></i>Past papers</li>
+
+          <li><i class="fa-solid fa-check mdu-icon" aria-hidden="true"></i>Group classes</li>
+
+        </ul>
+        <button class="btn btn-primary payBtn" data-plan="gold" data-amount="25000">Buy Gold</button> <!-- cents -->
+      </div>
+
+      <div class="plan-card">
+        <h3>Platinum</h3>
+        <div style="font-size: 2rem; color: #ffd700;">R350</div>
+        <ul style="list-style: none; padding: 1rem 0;">
+          <li><i class="fa-solid fa-check mdu-icon" aria-hidden="true"></i>All Gold +</li>
+
+          <li><i class="fa-solid fa-check mdu-icon" aria-hidden="true"></i>1-on-1 tutoring</li>
+
+          <li><i class="fa-solid fa-check mdu-icon" aria-hidden="true"></i>Custom lessons</li>
+
+        </ul>
+        <button class="btn btn-primary payBtn" data-plan="platinum" data-amount="35000">Buy Platinum</button>
+      </div>
+
+      <div class="plan-card">
+        <h3>Platinum Star <i class="fa-solid fa-star mdu-icon" aria-hidden="true"></i></h3>
+
+        <div style="font-size: 2rem; color: #ffd700;">R400</div>
+        <ul style="list-style: none; padding: 1rem 0;">
+          <li><i class="fa-solid fa-check mdu-icon" aria-hidden="true"></i>Everything</li>
+
+          <li><i class="fa-solid fa-check mdu-icon" aria-hidden="true"></i>Priority 1-on-1</li>
+
+        </ul>
+        <button class="btn btn-primary payBtn" data-plan="platinum_star" data-amount="40000">Buy Star</button>
+      </div>
+    </div>
+
+    <div class="alert info">
+      <strong>Note:</strong> After payment, contact WhatsApp to activate plan.
+      <p style="margin-top:0.6rem; opacity:0.9; font-size:0.95rem;">
+        <strong>Payments:</strong> Payments are processed by Paystack. Card/bank details are not stored on our side.
+        By continuing, you agree to our <a href="terms.html" target="_blank" rel="noopener noreferrer">Terms &amp; Conditions</a>
+        and <a href="privacy.html" target="_blank" rel="noopener noreferrer">Privacy Policy</a>.
+      </p>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <div class="container">
+      <a href="https://wa.me/27637919877" class="contact-btn" target="_blank">
+        <i class="fa-solid fa-comments mdu-icon" aria-hidden="true"></i>Contact Support: 0637919877
+      </a>
+
+      <!-- Footer legal links -->
+      <div style="margin-top: 1.5rem; display:flex; gap:1rem; justify-content:center; flex-wrap:wrap;">
+        <a href="terms.html" class="contact-btn" style="background: rgba(100,200,255,0.15); border: 1px solid rgba(100,200,255,0.4); padding: 0.8rem 1.2rem; font-size:0.95rem;">
+          Terms &amp; Conditions
+        </a>
+        <a href="privacy.html" class="contact-btn" style="background: rgba(100,200,255,0.15); border: 1px solid rgba(100,200,255,0.4); padding: 0.8rem 1.2rem; font-size:0.95rem;">
+          Privacy Policy
+        </a>
+        <a href="popia.html" class="contact-btn" style="background: rgba(100,200,255,0.15); border: 1px solid rgba(100,200,255,0.4); padding: 0.8rem 1.2rem; font-size:0.95rem;">
+          POPIA
+        </a>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>
+<!-- FIXED: Removed duplicate app.js script - plans.js has all auth/payment logic -->
+

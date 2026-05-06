@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MathWithMDU - Grade 10-12 Mathematical Literacy</title>
+  <link rel="stylesheet" href="styles.css">
+  <!-- Local Font Awesome (self-hosted to avoid third-party tracking/storage blocking warnings) -->
+  <link rel="stylesheet" href="assets/vendor/font-awesome/all.min.css" />
+  <script type="module" src="app.js" defer></script>
+  <script src="navbar.js" defer></script>
+</head>
+<body>
+<nav class="navbar">
+    <div class="nav-container">
+          <i class="fa-solid fa-drafting-compass mdu-icon" aria-hidden="true"></i>MathWithMDU
+      <div class="nav-wrapper">
+        <ul class="nav-links">
+          <li><a href="#home">Home</a></li>
+          <li><a href="plans.html">Plans</a></li>
+          <li><a href="contact.html">Contact</a></li>
+          <li><a href="#dashboard" id="dashboardLink" class="hidden">Dashboard</a></li>
+        </ul>
+        <div class="mobile-menu">
+          <ul class="nav-links">
+            <li><a href="#home">Home</a></li>
+            <li><a href="plans.html">Plans</a></li>
+            <li><a href="contact.html">Contact</a></li>
+            <li><a href="#dashboard" id="dashboardLink" class="hidden">Dashboard</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="hamburger">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+      <div class="menu-overlay"></div>
+      <div class="auth-btns">
+        <button id="loginBtn" class="btn btn-secondary">Login</button>
+        <button id="registerBtn" class="btn btn-primary">Register</button>
+        <button id="logoutBtn" class="hidden" class="btn btn-secondary">Logout</button>
+      </div>
+    </div>
+  </nav>
+
+  <section id="home" class="hero">
+    <div class="container">
+      <div class="hero-content">
+        <h1 class="hero-headline">Transform Your Learning, Today</h1>
+        <p class="hero-subtext">Comprehensive support for Grade 10–12 Mathematical Literacy.</p>
+          <a href="#contact" class="hero-cta">Get Started</a>
+
+      </div>
+      <canvas class="hero-particles" id="heroParticles"></canvas>
+    </div>
+  </section>
+
+  <script>
+    // Futuristic particle system for hero
+    (function() {
+      const canvas = document.getElementById('heroParticles');
+      const heroEl = document.querySelector('.hero');
+      if (!canvas || !heroEl) return; // FIX: prevent runtime crash if elements missing
+      const ctx = canvas.getContext('2d');
+      if (!ctx) return;
+
+      canvas.width = window.innerWidth;
+      canvas.height = heroEl.offsetHeight;
+      canvas.style.position = 'absolute';
+      canvas.style.top = '0';
+      canvas.style.left = '0';
+      canvas.style.pointerEvents = 'none';
+      canvas.style.zIndex = '0';
+      
+      const particles = [];
+      const particleCount = 100;
+      
+      class Particle {
+        constructor() {
+          this.x = Math.random() * canvas.width;
+          this.y = Math.random() * canvas.height;
+          this.size = Math.random() * 2 + 0.5;
+          this.speedX = Math.random() * 0.5 - 0.25;
+          this.speedY = Math.random() * 0.5 - 0.25;
+          this.glow = Math.random() * 0.5 + 0.2;
+          this.hue = Math.random() * 60 + 180; // Cyan to blue
+        }
+        
+        update() {
+          this.x += this.speedX;
+          this.y += this.speedY;
+          
+          if (this.x < 0 || this.x > canvas.width) this.speedX *= -1;
+          if (this.y < 0 || this.y > canvas.height) this.speedY *= -1;
+        }
+        
+        draw() {
+          ctx.save();
+          ctx.globalCompositeOperation = 'screen';
+          ctx.shadowBlur = 20 * this.glow;
+          ctx.shadowColor = `hsl(${this.hue}, 100%, 60%)`;
+          ctx.beginPath();
+          ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+          ctx.fillStyle = `hsl(${this.hue}, 100%, 70%)`;
+          ctx.fill();
+          ctx.restore();
+        }
+      }
+      
+      for (let i = 0; i < particleCount; i++) {
+        particles.push(new Particle());
+      }
+      
+      function animate() {
+        ctx.fillStyle = 'rgba(10, 10, 26, 0.1)';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        
+        particles.forEach(p => {
+          p.update();
+          p.draw();
+        });
+        
+        requestAnimationFrame(animate);
+      }
+      
+      animate();
+      
+      window.addEventListener('resize', () => {
+        canvas.width = window.innerWidth;
+        const heroEl2 = document.querySelector('.hero');
+        canvas.height = heroEl2 ? heroEl2.offsetHeight : canvas.height;
+      });
+    })();
+  </script>
+
+  <!-- Register Modal -->
+  <div id="registerModal" class="modal hidden">
+    <div class="modal-content">
+      <button type="button" class="close" aria-label="Close register modal">&amp;times;</button>
+      <h2>Start Your Free Trial</h2>
+      <form id="registerForm">
+        <div class="form-group">
+          <label>Full Name</label>
+          <input type="text" id="regName" required>
+        </div>
+        <div class="form-group">
+          <label>Email</label>
+          <input type="email" id="regEmail" required>
+        </div>
+        <div class="form-group">
+          <label>Password</label>
+          <input type="password" id="regPassword" required minlength="6">
+        </div>
+        <div class="form-group">
+          <label>Grade</label>
+          <select id="regGrade" required>
+            <option value="">Select Grade</option>
+            <option value="10">Grade 10</option>
+            <option value="11">Grade 11</option>
+            <option value="12">Grade 12</option>
+          </select>
+        </div>
+
+        <!-- POPIA consent (registration acknowledgement) -->
+        <div class="form-group">
+          <label style="display:flex; gap:0.6rem; align-items:flex-start;">
+            <input type="checkbox" id="privacyConsent" required style="margin-top:0.35rem;">
+            <span>
+              I understand that MathWithMDU will process my personal information to create and manage my account and provide the learning service (in line with POPIA), and I agree to the <a href="privacy.html" target="_blank" rel="noopener noreferrer">Privacy Policy</a>.
+            </span>
+          </label>
+
+        </div>
+
+        <button type="submit" class="btn btn-primary">Create Trial Account</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Login Modal -->
+  <div id="loginModal" class="modal hidden">
+    <div class="modal-content">
+      <button type="button" class="close" aria-label="Close login modal">&amp;times;</button>
+      <h2>Login</h2>
+      <form id="loginForm">
+        <div class="form-group">
+          <label>Email</label>
+          <input type="email" id="loginEmail" required>
+        </div>
+        <div class="form-group">
+          <label>Password</label>
+          <input type="password" id="loginPassword" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Login</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Loading -->
+  <div id="loading" class="loading hidden">
+    <div class="spinner"></div>
+  </div>
+
+  <!-- Alerts -->
+  <div id="alertContainer"></div>
+
+  <!-- Cookie Consent Banner (UI + local record only) -->
+  <div id="cookieConsentBanner" class="cookie-banner hidden" role="dialog" aria-live="polite" aria-label="Cookie consent">
+    <div class="cookie-banner-content">
+      <div>
+        <strong>Cookie notice</strong>
+        <p style="margin-top:0.4rem; opacity:0.9;">
+          We use essential cookies for the website to work. We may also use analytics cookies.
+          Choose your preference.
+        </p>
+      </div>
+      <div class="cookie-banner-actions">
+        <button id="cookieEssentialBtn" class="btn btn-secondary" type="button">Essential only</button>
+        <button id="cookieAcceptBtn" class="btn btn-primary" type="button">Accept analytics</button>
+      </div>
+          <p style="margin-top:0.8rem; font-size:0.9rem; opacity:0.85;">
+        <a href="privacy.html" target="_blank" rel="noopener noreferrer">Privacy Policy</a>
+        • <a href="popia.html" target="_blank" rel="noopener noreferrer">POPIA</a>
+      </p>
+
+      <noscript>
+        <p style="margin-top:0.8rem; font-size:0.85rem; opacity:0.8;">Cookie settings may not work without JavaScript. Please review your browser settings.</p>
+      </noscript>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <div class="container">
+      <h3>Get in Touch</h3>
+      <p>Email: dnmduduzi@gmail.com</p>
+      <a href="https://wa.me/27637919877" class="contact-btn" target="_blank">
+        <i class="fa-solid fa-comments mdu-icon" aria-hidden="true"></i>WhatsApp/Call: 0637919877
+      </a>
+
+
+      <!-- Footer legal links -->
+      <div style="margin-top: 1.5rem; display:flex; gap:1rem; justify-content:center; flex-wrap:wrap;">
+        <a href="terms.html" class="contact-btn" style="background: rgba(100,200,255,0.15); border: 1px solid rgba(100,200,255,0.4); padding: 0.8rem 1.2rem; font-size:0.95rem;">
+          Terms &amp; Conditions
+        </a>
+        <a href="privacy.html" class="contact-btn" style="background: rgba(100,200,255,0.15); border: 1px solid rgba(100,200,255,0.4); padding: 0.8rem 1.2rem; font-size:0.95rem;">
+          Privacy Policy
+        </a>
+        <a href="popia.html" class="contact-btn" style="background: rgba(100,200,255,0.15); border: 1px solid rgba(100,200,255,0.4); padding: 0.8rem 1.2rem; font-size:0.95rem;">
+          POPIA
+        </a>
+      </div>
+
+      <p style="margin-top: 2rem; opacity: 0.8;">&copy; 2026 MathWithMDU. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script type="module">
+    // Modal CSS will be added via JS
+    const modalCSS = `
+      .modal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.5);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 1500;
+      }
+      .modal-content {
+        background: white;
+        padding: 2rem;
+        border-radius: 20px;
+        max-width: 500px;
+        width: 90%;
+        max-height: 90vh;
+        overflow-y: auto;
+        position: relative;
+      }
+      .close {
+        position: absolute;
+        right: 1.5rem;
+        top: 1.5rem;
+        font-size: 2rem;
+        cursor: pointer;
+        color: #999;
+      }
+      .close:hover {
+        color: #333;
+      }
+    `;
+    const style = document.createElement('style');
+    style.textContent = modalCSS;
+    document.head.appendChild(style);
+
+    // Cookie consent UI (local record only). This is included for POPIA accountability.
+    const consentBanner = document.getElementById('cookieConsentBanner');
+    const essentialBtn = document.getElementById('cookieEssentialBtn');
+    const acceptBtn = document.getElementById('cookieAcceptBtn');
+
+    const consentKey = 'mdu_cookie_consent';
+
+    function showBanner() {
+      if (!consentBanner) return;
+      consentBanner.classList.remove('hidden');
+    }
+
+    function hideBanner() {
+      if (!consentBanner) return;
+      consentBanner.classList.add('hidden');
+    }
+
+    function setConsent(value) {
+      try {
+        localStorage.setItem(consentKey, JSON.stringify({
+          value,
+          setAt: new Date().toISOString()
+        }));
+      } catch (_) {
+        // ignore localStorage failures
+      }
+      hideBanner();
+    }
+
+    try {
+      const stored = localStorage.getItem(consentKey);
+      if (!stored) showBanner();
+      else hideBanner();
+    } catch (_) {
+      showBanner();
+    }
+
+    if (essentialBtn) essentialBtn.addEventListener('click', () => setConsent('essential'));
+    if (acceptBtn) acceptBtn.addEventListener('click', () => setConsent('analytics'));
+  </script>
+</body>
+</html>
+
