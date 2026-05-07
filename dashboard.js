@@ -203,8 +203,11 @@ onAuthStateChanged(auth, async (user) => {
   }
 
   hideLoading();
-  loadLessons();
-  loadPapers();
-  loadAnnouncements();
+  await Promise.all([
+    loadLessons(),
+    loadPapers(),
+    loadAnnouncements()
+  ]);
 });
+
 
