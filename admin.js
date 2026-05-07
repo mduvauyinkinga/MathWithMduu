@@ -18,7 +18,14 @@ import {
   getDownloadURL 
 } from 'https://www.gstatic.com/firebasejs/10.13.1/firebase-storage.js';
 
-const ADMIN_EMAIL = 'dnmduduzi@gmail.com';
+const ADMIN_ROLE_LABEL = 'admin';
+// IMPORTANT: Admin authorization must be enforced by Firestore rules (custom claims).
+// Do NOT embed admin emails or passwords in frontend code.
+function isClientAdmin() {
+  // Custom claims are available on the ID token, but not directly in this client JS scope.
+  // We keep this as a best-effort UI guard; real security is rules-based.
+  return false;
+}
 
 const adminLogin = document.getElementById('adminLogin');
 const adminSection = document.getElementById('adminSection');
@@ -38,15 +45,12 @@ adminLogin.addEventListener('click', () => {
   const email = prompt('Admin Email:');
   const password = prompt('Password:');
   
-  if (email === ADMIN_EMAIL) {
-    signInWithEmailAndPassword(auth, email, password)
-      .then(() => {
-        // Listener will handle
-      })
-      .catch(err => showAlert(err.message, 'error'));
-  } else {
-    showAlert('Invalid admin email', 'error');
-  }
+  // Admin login is authenticated normally; access is enforced by Firestore rules.
+  signInWithEmailAndPassword(auth, email, password)
+    .then(() => {
+      // Listener will handle
+    })
+    .catch(err => showAlert(err.message, 'error'));
 });
 
 logoutBtn.addEventListener('click', () => {
@@ -122,8 +126,9 @@ uploadForm.addEventListener('submit', async (e) => {
   const title = document.getElementById('fileTitle').value;
   const fileName = `uploads/${Date.now()}_${file.name}`;
   
-  if (!auth.currentUser || auth.currentUser.email !== ADMIN_EMAIL) {
-    showAlert('Admin access required', 'error');
+  // Client-side guard only; Firestore rules are the real gate.
+  if (!auth.currentUser) {
+    showAlert('Login required', 'error');
     return;
   }
 
@@ -158,16 +163,16 @@ uploadForm.addEventListener('submit', async (e) => {
 });
 
 // Auth listener
-onAuthStateChanged(auth, (user) => {
-  if (user && user.email === ADMIN_EMAIL) {
-    adminInfo.textContent = `Logged in: ${user.email}`;
+onAuthStateChanged(auth, async (user) => {
+  // SECURITY: Do not gate admin panel visibility using email-based secrets.
+  // Real access control is enforced by Firestore rules.
+  if (user) {
     authSection.classList.add('hidden');
     adminSection.classList.remove('hidden');
-  } else if (user) {
-    window.location.href = 'dashboard.html';
   } else {
     authSection.classList.remove('hidden');
     adminSection.classList.add('hidden');
   }
 });
+
 

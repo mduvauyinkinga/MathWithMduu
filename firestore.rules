@@ -1,4 +1,9 @@
 service cloud.firestore {
+  function isAdmin() {
+    // Set via Firebase Custom Claims: admin=true
+    return request.auth != null && request.auth.token.admin == true;
+  }
+
   match /databases/{database}/documents {
     // Users can read/write their own doc
     match /users/{userId} {
@@ -8,7 +13,7 @@ service cloud.firestore {
     // Admin uploads
     match /uploads/{docId} {
       allow read: if request.auth != null;
-      allow write: if request.auth != null && request.auth.token.email == "dnmduduzi@gmail.com";
+      allow write: if isAdmin();
     }
     
     // Content: read if free or matches user plan, admin write
@@ -18,7 +23,7 @@ service cloud.firestore {
         exists(/databases/$(database)/documents/users/$(request.auth.uid)) && 
         resource.data.plan == get(/databases/$(database)/documents/users/$(request.auth.uid)).data.plan
       ); // FIXED: Added exists() check prevents errors
-      allow write: if request.auth != null && request.auth.token.email == "dnmduduzi@gmail.com";
+      allow write: if isAdmin();
     }
     
     match /past_papers/{docId} {
@@ -27,12 +32,12 @@ service cloud.firestore {
         exists(/databases/$(database)/documents/users/$(request.auth.uid)) && 
         resource.data.plan == get(/databases/$(database)/documents/users/$(request.auth.uid)).data.plan
       ); // FIXED: Added exists() check prevents errors
-      allow write: if request.auth != null && request.auth.token.email == "dnmduduzi@gmail.com";
+      allow write: if isAdmin();
     }
     
     match /announcements/{docId} {
       allow read: if request.auth != null;
-      allow write: if request.auth != null && request.auth.token.email == "dnmduduzi@gmail.com";
+      allow write: if isAdmin();
     }
   }
 }

@@ -4,15 +4,26 @@ import { getFirestore } from 'https://www.gstatic.com/firebasejs/10.13.1/firebas
 import { getStorage } from 'https://www.gstatic.com/firebasejs/10.13.1/firebase-storage.js';
 
 // Firebase configuration
-const firebaseConfig = {
-  apiKey: "AIzaSyDJyh2rEHrp461pdUCVapZ81-YWyv9di38",
-  authDomain: "mathwithmdu.firebaseapp.com",
-  projectId: "mathwithmdu",
-  storageBucket: "mathwithmdu.appspot.com",
-  messagingSenderId: "23891407297",
-  appId: "1:23891407297:web:c19e0b87025c3f51c0bf40",
-  measurementId: "G-0414TYTBRK"
-};
+// SECURITY: avoid hard-coding config values in frontend source.
+// Expected runtime injection:
+//   window.__ENV__ = { firebaseConfig: { ... } }
+// If missing, fail closed with a clear error.
+const firebaseConfig = (typeof window !== 'undefined' && window.__ENV__ && window.__ENV__.firebaseConfig)
+  ? window.__ENV__.firebaseConfig
+  : {
+      apiKey: '',
+      authDomain: '',
+      projectId: '',
+      storageBucket: '',
+      messagingSenderId: '',
+      appId: '',
+      measurementId: ''
+    };
+
+if (!firebaseConfig || !firebaseConfig.apiKey) {
+  console.error('[MathWithMDU] Missing firebaseConfig. Inject window.__ENV__.firebaseConfig at runtime.');
+}
+
 
 // Initialize Firebase
 export const app = initializeApp(firebaseConfig);

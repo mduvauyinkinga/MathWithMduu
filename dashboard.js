@@ -27,7 +27,7 @@ const alertContainer = document.getElementById('alertContainer');
 
 let currentUser = null;
 let userPlan = 'trial';
-const ADMIN_EMAIL = 'dnmduduzi@gmail.com';
+const ADMIN_ROLE_LABEL = 'ADMIN';
 
 // FIXED: Utils imported above - local functions removed
 
@@ -191,10 +191,15 @@ onAuthStateChanged(auth, async (user) => {
   planBadge.textContent = `Current Plan: ${userPlan.toUpperCase()}`;
   planBadge.style.background = userPlan === 'trial' ? '#fff3cd' : '#d4edda';
 
-  // Admin check
-  if (user.email === ADMIN_EMAIL) {
-    planBadge.innerHTML += ' <i class="fa-solid fa-user-tie mdu-icon" aria-hidden="true"></i>ADMIN'; // emoji -> FA icon
-    planBadge.style.background = '#d1ecf1';
+  // Admin label (no email-based secrets). Authorization is enforced in Firestore rules.
+  // Best practice: expose admin status via custom claim admin=true, but keep UI non-sensitive.
+  if (user && user.email) {
+    // Leave as-is visually only when admin is detected via custom claim (if present).
+    const maybeAdmin = user['admin'] || false;
+    if (maybeAdmin) {
+      planBadge.textContent += ` ${ADMIN_ROLE_LABEL}`;
+      planBadge.style.background = '#d1ecf1';
+    }
   }
 
   hideLoading();
