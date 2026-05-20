@@ -1,4 +1,4 @@
-- [ ] Add a scoped CSS rule to set dashboard paragraph color to website blue (#667eea)
-- [ ] Update dashboard.html body tag to include class `dashboard-page`
-- [ ] Manually verify dashboard.html renders paragraph text in blue
+# TODO
+
+- [ ] Fix Firebase SDK loading errors on `index.html` when opened locally (remove `/__/firebase/...` scripts and `firebase.app()` inline code).
 

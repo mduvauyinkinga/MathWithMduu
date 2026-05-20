@@ -17,6 +17,10 @@ import { showAlert, showLoading, hideLoading } from './utils.js'; // FIXED: Shar
 
 // Elements
 const logoutBtn = document.getElementById('logoutBtn');
+if (!logoutBtn) {
+  console.warn('[MathWithMDU] dashboard logoutBtn missing - check dashboard.html');
+}
+
 const userInfo = document.getElementById('userInfo');
 const planBadge = document.getElementById('planBadge');
 const lessonsList = document.getElementById('lessonsList');
@@ -32,7 +36,8 @@ const ADMIN_ROLE_LABEL = 'ADMIN';
 // FIXED: Utils imported above - local functions removed
 
 
-logoutBtn.addEventListener('click', () => signOut(auth));
+logoutBtn?.addEventListener('click', () => signOut(auth));
+
 
 // Load content
 async function loadLessons() {
@@ -168,12 +173,23 @@ async function loadAnnouncements() {
 // Auth listener
 onAuthStateChanged(auth, async (user) => {
   currentUser = user;
-  showLoading();
 
-  if (!user) {
-    window.location.href = 'index.html';
-    return;
+  try {
+    showLoading();
+
+    if (!user) {
+      window.location.href = 'login.html';
+      return;
+    }
+
+    if (!lessonsList || !papersList || !announcementsList) {
+      showAlert('Dashboard failed to load (missing UI elements).', 'error');
+      return;
+    }
+  } catch (_) {
+    // ignore
   }
+
 
   // POPIA: if the stored consent checkbox is missing/unset, we do not block access,
   // but the Privacy Policy and POPIA pages provide accountability and rights.

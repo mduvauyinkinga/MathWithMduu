@@ -18,16 +18,8 @@ import {
   getDownloadURL 
 } from 'https://www.gstatic.com/firebasejs/10.13.1/firebase-storage.js';
 
-const ADMIN_ROLE_LABEL = 'admin';
-// IMPORTANT: Admin authorization must be enforced by Firestore rules (custom claims).
-// Do NOT embed admin emails or passwords in frontend code.
-function isClientAdmin() {
-  // Custom claims are available on the ID token, but not directly in this client JS scope.
-  // We keep this as a best-effort UI guard; real security is rules-based.
-  return false;
-}
-
 const adminLogin = document.getElementById('adminLogin');
+
 const adminSection = document.getElementById('adminSection');
 const authSection = document.getElementById('authSection');
 const logoutBtn = document.getElementById('logoutBtn');
@@ -162,17 +154,73 @@ uploadForm.addEventListener('submit', async (e) => {
   );
 });
 
-// Auth listener
+// ---- Admin access guard (custom claims) ----
+// Enforces UI gating AND prevents admin-only handlers from running for non-admins.
+
+function setAdminUI(isAdmin) {
+  if (authSection) authSection.classList.toggle('hidden', !!isAdmin);
+  if (adminSection) adminSection.classList.toggle('hidden', !isAdmin);
+  if (adminInfo) {
+    adminInfo.textContent = isAdmin
+      ? `Signed in as admin: ${auth.currentUser?.email || auth.currentUser?.uid || ''}`
+      : '';
+  }
+}
+
+// Default: hide admin UI until claim verification completes.
+setAdminUI(false);
+
+let isAdminUser = false;
+
 onAuthStateChanged(auth, async (user) => {
-  // SECURITY: Do not gate admin panel visibility using email-based secrets.
-  // Real access control is enforced by Firestore rules.
-  if (user) {
-    authSection.classList.add('hidden');
-    adminSection.classList.remove('hidden');
-  } else {
-    authSection.classList.remove('hidden');
-    adminSection.classList.add('hidden');
+  if (!user) {
+    isAdminUser = false;
+    setAdminUI(false);
+    window.location.href = 'index.html';
+    return;
+  }
+
+  try {
+    // IMPORTANT: Custom claims live in the ID token.
+    // Force-refresh token so newly set claims propagate.
+    const tokenResult = await user.getIdTokenResult(true);
+
+    if (tokenResult?.claims?.admin) {
+      isAdminUser = true;
+      setAdminUI(true);
+    } else {
+      isAdminUser = false;
+      // Redirect non-admins away from the admin page.
+      await signOut(auth);
+      setAdminUI(false);
+      window.location.href = 'index.html';
+    }
+  } catch (err) {
+    console.error('Error checking admin claim:', err);
+    isAdminUser = false;
+    await signOut(auth);
+    setAdminUI(false);
+    window.location.href = 'index.html';
   }
 });
+
+
+// Hard block: stop admin-only submits until claim check has passed.
+// (Firestore rules remain the real security gate.)
+[lessonForm, paperForm, announceForm, uploadForm]
+  .filter(Boolean)
+  .forEach((form) => {
+    form.addEventListener('submit', (e) => {
+      if (!isAdminUser) {
+        e.preventDefault();
+        e.stopPropagation();
+        showAlert('Admin access required.', 'error');
+      }
+    });
+  });
+
+
+
+
 
 

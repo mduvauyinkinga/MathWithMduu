@@ -36,3 +36,21 @@ export function hideModal(modalId) {
   if (modal) modal.classList.add('hidden');
 }
 
+/**
+ * Escape HTML special characters so user input can be safely embedded into HTML.
+ * Prefer `textContent` over HTML insertion, but this is useful when building strings.
+ *
+ * Escapes: &, <, >, ", '
+ */
+export function escapeHtml(input) {
+  // Treat null/undefined as empty string.
+  const str = input == null ? '' : String(input);
+
+  return str
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '<')
+    .replace(/>/g, '>')
+    .replace(/"/g, '"')
+    .replace(/'/g, '&#39;');
+}
+

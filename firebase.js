@@ -1,33 +1,70 @@
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.13.1/firebase-app.js';
-import { getAuth } from 'https://www.gstatic.com/firebasejs/10.13.1/firebase-auth.js';
+import { 
+  getAuth, 
+  signInWithEmailAndPassword, 
+  getIdTokenResult 
+} from 'https://www.gstatic.com/firebasejs/10.13.1/firebase-auth.js';
 import { getFirestore } from 'https://www.gstatic.com/firebasejs/10.13.1/firebase-firestore.js';
 import { getStorage } from 'https://www.gstatic.com/firebasejs/10.13.1/firebase-storage.js';
 
-// Firebase configuration
-// SECURITY: avoid hard-coding config values in frontend source.
-// Expected runtime injection:
-//   window.__ENV__ = { firebaseConfig: { ... } }
-// If missing, fail closed with a clear error.
-const firebaseConfig = (typeof window !== 'undefined' && window.__ENV__ && window.__ENV__.firebaseConfig)
-  ? window.__ENV__.firebaseConfig
-  : {
-      apiKey: '',
-      authDomain: '',
-      projectId: '',
-      storageBucket: '',
-      messagingSenderId: '',
-      appId: '',
-      measurementId: ''
-    };
+/* =========================
+   FIREBASE CONFIG (SAFE)
+   ========================= */
+const firebaseConfig =
+  (typeof window !== 'undefined' &&
+    window.__ENV__ &&
+    window.__ENV__.firebaseConfig)
+    ? window.__ENV__.firebaseConfig
+    : {
+        apiKey: "AIzaSyDJyh2rEHrp461pdUCVapZ81-YWyv9di38",
+        authDomain: "mathwithmdu.firebaseapp.com",
+        projectId: "mathwithmdu",
+        storageBucket: "mathwithmdu.firebasestorage.app",
+        messagingSenderId: "23891407297",
+        appId: "1:23891407297:web:c19e0b87025c3f51c0bf40",
+        measurementId: "G-0414TYTBRK"
+      };
 
-if (!firebaseConfig || !firebaseConfig.apiKey) {
-  console.error('[MathWithMDU] Missing firebaseConfig. Inject window.__ENV__.firebaseConfig at runtime.');
-}
-
-
-// Initialize Firebase
+/* =========================
+   INIT FIREBASE APP
+   ========================= */
 export const app = initializeApp(firebaseConfig);
+
+/* =========================
+   SERVICES
+   ========================= */
 export const auth = getAuth(app);
 export const db = getFirestore(app);
 export const storage = getStorage(app);
 
+/* =========================
+   ADMIN LOGIN HANDLER
+   ========================= */
+const loginForm = document.getElementById("adminLoginForm");
+const errorBox = document.getElementById("loginError");
+
+if (loginForm) {
+  loginForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const email = document.getElementById("adminEmail").value;
+    const password = document.getElementById("adminPassword").value;
+
+    try {
+      // Sign in with Firebase Auth
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+
+      // Check for admin claim
+      const tokenResult = await getIdTokenResult(user);
+      if (tokenResult.claims.admin) {
+        console.log("✅ Admin logged in:", user.email);
+        window.location.href = "admin.html"; // redirect
+      } else {
+        errorBox.innerText = "❌ Access denied. Not an admin.";
+        await auth.signOut();
+      }
+    } catch (err) {
+      errorBox.innerText = "Login failed: " + err.message;
+    }
+  });
+}
