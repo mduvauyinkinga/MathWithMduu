@@ -78,13 +78,28 @@ function initAuthListener() {
 function updateNavbarLoggedIn(authSection, name, role) {
   // If this page uses authSection placeholder, render there.
   if (authSection) {
-    authSection.innerHTML = `
-      <div class="user-info">
-        <span class="glow-text">👤 ${escapeHtml(name)}</span>
-        <span class="role-badge">${escapeHtml(String(role).toUpperCase())}</span>
-        <button id="logoutBtn" class="nav-btn">Logout</button>
-      </div>
-    `;
+    // Build DOM nodes to avoid innerHTML injection.
+    // Ensure we don't rely on broken legacy escapeHtml().
+    const userInfo = document.createElement('div');
+
+    userInfo.className = 'user-info';
+
+    const glow = document.createElement('span');
+    glow.className = 'glow-text';
+    glow.textContent = '👤 ' + String(name ?? '');
+
+    const badge = document.createElement('span');
+    badge.className = 'role-badge';
+    badge.textContent = String(role ?? 'user').toUpperCase();
+
+    const btn = document.createElement('button');
+    btn.id = 'logoutBtn';
+    btn.className = 'nav-btn';
+    btn.type = 'button';
+    btn.textContent = 'Logout';
+
+    userInfo.append(glow, badge, btn);
+    authSection.replaceChildren(userInfo);
 
     document.getElementById('logoutBtn')?.addEventListener('click', () => {
       signOut(auth).then(() => {
@@ -100,6 +115,7 @@ function updateNavbarLoggedIn(authSection, name, role) {
   document.querySelectorAll('#logoutBtn').forEach(b => b.classList.remove('hidden'));
   document.querySelectorAll('#dashboardLink').forEach(b => b.classList.remove('hidden'));
 
+
   document.querySelectorAll('.admin-only').forEach(el => {
     el.style.display = role === 'admin' ? 'block' : 'none';
   });
@@ -108,6 +124,7 @@ function updateNavbarLoggedIn(authSection, name, role) {
 
 function updateNavbarLoggedOut(authSection) {
   if (authSection) {
+    authSection.replaceChildren();
     authSection.innerHTML = `
       <a href="login.html" class="nav-btn">Login</a>
       <a href="signup.html" class="nav-btn highlight">Sign Up</a>
@@ -129,7 +146,8 @@ function updateNavbarLoggedOut(authSection) {
 function setActiveLink() {
   const currentPage = window.location.pathname.split('/').pop() || 'index.html';
 
-  document.querySelectorAll('a').forEach(a => {
+  const scope = document.querySelector('.navbar') || document;
+  scope.querySelectorAll('a').forEach(a => {
     const href = a.getAttribute('href');
     if (!href) return;
 
@@ -146,6 +164,7 @@ function setActiveLink() {
 }
 
 function escapeHtml(value) {
+  // Correct HTML escaping (legacy use).
   return String(value)
     .replaceAll('&', '&amp;')
     .replaceAll('<', '<')

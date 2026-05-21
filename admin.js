@@ -33,23 +33,31 @@ const announceForm = document.getElementById('announceForm');
 // FIXED: showAlert imported from utils.js - local duplicate removed
 
 
-adminLogin.addEventListener('click', () => {
-  const email = prompt('Admin Email:');
-  const password = prompt('Password:');
-  
-  // Admin login is authenticated normally; access is enforced by Firestore rules.
-  signInWithEmailAndPassword(auth, email, password)
-    .then(() => {
-      // Listener will handle
-    })
-    .catch(err => showAlert(err.message, 'error'));
-});
+if (adminLogin) {
+  // Uses the admin login fields from admin.html (no prompts).
+  adminLogin.addEventListener('click', async () => {
+    const email = document.getElementById('adminEmail')?.value?.trim() || '';
+    const password = document.getElementById('adminPassword')?.value || '';
+
+    if (!email || !password) {
+      showAlert('Admin email and password are required.', 'error');
+      return;
+    }
+
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+      // Listener will handle redirect/gating.
+    } catch (err) {
+      showAlert(err?.message || 'Admin login failed.', 'error');
+    }
+  });
+}
 
 logoutBtn.addEventListener('click', () => {
   signOut(auth);
 });
 
-lessonForm.addEventListener('submit', async (e) => {
+if (lessonForm) lessonForm.addEventListener('submit', async (e) => {
   e.preventDefault();
   const data = {
     title: document.getElementById('lessonTitle').value,
@@ -72,7 +80,7 @@ lessonForm.addEventListener('submit', async (e) => {
   }
 });
 
-paperForm.addEventListener('submit', async (e) => {
+if (paperForm) paperForm.addEventListener('submit', async (e) => {
   e.preventDefault();
   const data = {
     title: document.getElementById('paperTitle').value,
@@ -92,7 +100,7 @@ paperForm.addEventListener('submit', async (e) => {
   }
 });
 
-announceForm.addEventListener('submit', async (e) => {
+if (announceForm) announceForm.addEventListener('submit', async (e) => {
   e.preventDefault();
   const data = {
     message: document.getElementById('announceMsg').value,
@@ -111,7 +119,7 @@ announceForm.addEventListener('submit', async (e) => {
   }
 });
 
-uploadForm.addEventListener('submit', async (e) => {
+if (uploadForm) uploadForm.addEventListener('submit', async (e) => {
   e.preventDefault();
   
   const file = document.getElementById('fileInput').files[0];
@@ -208,6 +216,7 @@ onAuthStateChanged(auth, async (user) => {
 // Hard block: stop admin-only submits until claim check has passed.
 // (Firestore rules remain the real security gate.)
 [lessonForm, paperForm, announceForm, uploadForm]
+  .filter(Boolean)
   .filter(Boolean)
   .forEach((form) => {
     form.addEventListener('submit', (e) => {
