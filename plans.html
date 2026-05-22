@@ -4,14 +4,30 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Plans - MathWithMDU</title>
+  <meta name="description" content="Choose the right plan for your Grade 10–12 Mathematical Literacy learning: Trial, Gold, Platinum, or Platinum Star." />
+  <meta name="robots" content="index,follow" />
+  <link rel="canonical" href="plans.html" />
+  <!-- OpenGraph -->
+  <meta property="og:title" content="Plans - MathWithMDU" />
+  <meta property="og:description" content="Compare plans for Grade 10–12 Mathematical Literacy learning. Trial, Gold, Platinum, and Platinum Star." />
+  <meta property="og:type" content="website" />
+  <meta property="og:locale" content="en_US" />
+  <meta property="og:site_name" content="MathWithMDU" />
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Plans - MathWithMDU" />
+  <meta name="twitter:description" content="Compare plans for Grade 10–12 Mathematical Literacy learning. Trial, Gold, Platinum, and Platinum Star." />
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="assets/vendor/font-awesome/all.min.css" />
 
   <!-- Favicon + mobile icons -->
-  <link rel="icon" type="image/png" sizes="32x32" href="assets/logo - blu-ish.png">
-  <link rel="apple-touch-icon" sizes="180x180" href="assets/logo - blu-ish.png">
+<link rel="icon" type="image/png" sizes="32x32" href="assets/logo%20-%20blu-ish.png">
+<link rel="apple-touch-icon" sizes="180x180" href="assets/logo%20-%20blu-ish.png">
 
   <script src="https://js.paystack.co/v1/inline.js" defer></script>
+
+  <!-- CSP: block inline scripts, allow app scripts + Paystack -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'none'; style-src 'self' 'unsafe-inline'; script-src 'self' https://js.paystack.co; img-src 'self' data:; connect-src 'self' https://firestore.googleapis.com https://*.googleapis.com https://*.gstatic.com; font-src 'self' data:;"/>
 
   <!-- Both navbar.js and plans.js use ES module imports -->
   <script type="module" src="navbar.js" defer></script>
@@ -22,7 +38,7 @@
 <body>
   <nav class="navbar">
     <div class="nav-container">
-<a href="index.html" class="logo-link" aria-label="Go to home"><img class="logo-img" src="assets/logo - blu-ish.png" alt="MathWithMDU logo"/></a>
+<a href="index.html" class="logo-link" aria-label="Go to home"><img class="logo-img" src="assets/logo%20-%20blu-ish.png" alt="MathWithMDU logo"/></a>
 
       <div class="nav-wrapper">
         <ul class="nav-links">
@@ -201,15 +217,7 @@
     </div>
   </footer>
 
-  <script>
-    // Redirect auth buttons
-    document.getElementById('loginBtn')?.addEventListener('click', () => {
-      window.location.href = 'login.html';
-    });
-    document.getElementById('registerBtn')?.addEventListener('click', () => {
-      window.location.href = 'register.html';
-    });
-  </script>
+  <script type="module" src="plans-auth-redirect.js" defer></script>
 </body>
 </html>
 

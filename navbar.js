@@ -6,41 +6,79 @@ import { doc, getDoc } from 'https://www.gstatic.com/firebasejs/10.13.1/firebase
 
 function initNavbar() {
   // Support both older and newer navbar markup (only some pages contain both).
-  const navLinks = document.querySelector('#navLinks');
-  const menuToggle = document.querySelector('#menuToggle');
+  const navLinks = document.querySelector('#navLinks'); // optional
+  const menuToggle = document.querySelector('#menuToggle'); // optional
 
+  // Prefer explicit IDs if present, otherwise fall back to class-based selectors.
+  const hamburger = document.querySelector('.hamburger'); // optional (class-based)
+  const mobileMenu = document.querySelector('.mobile-menu'); // optional (class-based)
+  const menuOverlay = document.querySelector('.menu-overlay'); // optional (class-based)
+
+  const closeMobileMenu = () => {
+    mobileMenu?.classList.remove('active');
+    hamburger?.classList.remove('active');
+    menuOverlay?.classList.remove('active');
+  };
+
+  // Desktop toggle (only when both elements exist).
   if (menuToggle && navLinks) {
     menuToggle.addEventListener('click', () => navLinks.classList.toggle('active'));
 
-    document.querySelectorAll('#navLinks a').forEach(link => {
+    // Close desktop/mobile menu when a nav link is clicked.
+    document.querySelectorAll('.mobile-menu a, #navLinks a').forEach(link => {
       link.addEventListener('click', () => navLinks.classList.remove('active'));
     });
-  } else {
-    const hamburger = document.querySelector('.hamburger');
-    const mobileMenu = document.querySelector('.mobile-menu');
-    const menuOverlay = document.querySelector('.menu-overlay');
+  }
 
-    if (hamburger && mobileMenu) {
-      hamburger.addEventListener('click', () => {
-        mobileMenu.classList.toggle('active');
-        hamburger.classList.toggle('active');
-        menuOverlay?.classList.toggle('active');
-      });
+  // Mobile toggle + accessibility
+  if (hamburger && mobileMenu) {
+    // Ensure mobile menu has a stable id for aria-controls.
+    if (!mobileMenu.id) mobileMenu.id = 'mobileNavMenu';
 
-      document.querySelectorAll('.mobile-menu a').forEach(link => {
-        link.addEventListener('click', () => {
-          mobileMenu.classList.remove('active');
-          hamburger.classList.remove('active');
-          menuOverlay?.classList.remove('active');
-        });
-      });
+    // Make hamburger behave like a button for assistive tech.
+    if (!hamburger.hasAttribute('role')) hamburger.setAttribute('role', 'button');
+    if (!hamburger.hasAttribute('tabindex')) hamburger.setAttribute('tabindex', '0');
+    hamburger.setAttribute('aria-controls', mobileMenu.id);
 
-      menuOverlay?.addEventListener('click', () => {
-        mobileMenu.classList.remove('active');
-        hamburger.classList.remove('active');
-        menuOverlay?.classList.remove('active');
-      });
-    }
+    const setExpanded = (expanded) => {
+      hamburger.setAttribute('aria-expanded', expanded ? 'true' : 'false');
+    };
+
+    // Initialize expanded state based on current classes.
+    setExpanded(mobileMenu.classList.contains('active'));
+
+    const focusFirstMobileLink = () => {
+      const firstLink = mobileMenu.querySelector('a[href]');
+      firstLink?.focus?.();
+    };
+
+    hamburger.addEventListener('click', () => {
+      const isOpening = !mobileMenu.classList.contains('active');
+      mobileMenu.classList.toggle('active');
+      hamburger.classList.toggle('active');
+      menuOverlay?.classList.toggle('active');
+      setExpanded(isOpening);
+
+      if (isOpening) focusFirstMobileLink();
+    });
+
+    hamburger.addEventListener('keydown', (evt) => {
+      if (evt.key !== 'Enter' && evt.key !== ' ') return;
+      evt.preventDefault();
+      hamburger.click();
+    });
+
+    // Close menu when any mobile nav link is clicked.
+    document.querySelectorAll('.mobile-menu a').forEach(link => {
+      // Avoid stacking duplicate listeners.
+      if (link.dataset.navCloseBound === '1') return;
+      link.dataset.navCloseBound = '1';
+
+      link.addEventListener('click', closeMobileMenu);
+    });
+
+    // Close menu when overlay is clicked.
+    menuOverlay?.addEventListener('click', closeMobileMenu);
   }
 
   initAuthListener();
@@ -79,9 +117,7 @@ function updateNavbarLoggedIn(authSection, name, role) {
   // If this page uses authSection placeholder, render there.
   if (authSection) {
     // Build DOM nodes to avoid innerHTML injection.
-    // Ensure we don't rely on broken legacy escapeHtml().
     const userInfo = document.createElement('div');
-
     userInfo.className = 'user-info';
 
     const glow = document.createElement('span');
@@ -115,20 +151,26 @@ function updateNavbarLoggedIn(authSection, name, role) {
   document.querySelectorAll('#logoutBtn').forEach(b => b.classList.remove('hidden'));
   document.querySelectorAll('#dashboardLink').forEach(b => b.classList.remove('hidden'));
 
-
   document.querySelectorAll('.admin-only').forEach(el => {
     el.style.display = role === 'admin' ? 'block' : 'none';
   });
 }
 
-
 function updateNavbarLoggedOut(authSection) {
   if (authSection) {
     authSection.replaceChildren();
-    authSection.innerHTML = `
-      <a href="login.html" class="nav-btn">Login</a>
-      <a href="signup.html" class="nav-btn highlight">Sign Up</a>
-    `;
+
+    const login = document.createElement('a');
+    login.href = 'login.html';
+    login.className = 'nav-btn';
+    login.textContent = 'Login';
+
+    const signup = document.createElement('a');
+    signup.href = 'signup.html';
+    signup.className = 'nav-btn highlight';
+    signup.textContent = 'Sign Up';
+
+    authSection.append(login, signup);
   }
 
   document.querySelectorAll('#loginBtn').forEach(b => b.classList.remove('hidden'));
@@ -142,35 +184,35 @@ function updateNavbarLoggedOut(authSection) {
   });
 }
 
-
 function setActiveLink() {
-  const currentPage = window.location.pathname.split('/').pop() || 'index.html';
+  const currentBasePage = (window.location.pathname.split('/').pop() || 'index.html');
+
+  const normalizeHrefToPage = (href) => {
+    if (!href) return null;
+    const noHash = href.split('#')[0];
+    const noQuery = noHash.split('?')[0];
+    return noQuery.split('/').pop() || 'index.html';
+  };
 
   const scope = document.querySelector('.navbar') || document;
   scope.querySelectorAll('a').forEach(a => {
     const href = a.getAttribute('href');
     if (!href) return;
 
-    // Highlight only exact page matches.
-    if (href === currentPage || (href === 'index.html' && currentPage === '')) {
+    a.classList.remove('active-link');
+
+    const page = normalizeHrefToPage(href);
+    if (!page) return;
+
+    if (page === currentBasePage) {
+      a.classList.add('active-link');
+      return;
+    }
+
+    if (currentBasePage === 'index.html' && page === 'index.html') {
       a.classList.add('active-link');
     }
-
-    // If href contains anchors like index.html#home, also handle.
-    if (href.startsWith('index.html') && currentPage === 'index.html') {
-      // do not force active-link on every index anchor; dashboard.html does its own.
-    }
   });
-}
-
-function escapeHtml(value) {
-  // Correct HTML escaping (legacy use).
-  return String(value)
-    .replaceAll('&', '&amp;')
-    .replaceAll('<', '<')
-    .replaceAll('>', '>')
-    .replaceAll('"', '"')
-    .replaceAll("'", '&#039;');
 }
 
 document.addEventListener('DOMContentLoaded', initNavbar);

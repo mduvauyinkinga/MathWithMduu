@@ -57,7 +57,7 @@ if (loginForm) {
       // Check for admin claim
       const tokenResult = await getIdTokenResult(user);
       if (tokenResult.claims.admin) {
-        console.log("✅ Admin logged in:", user.email);
+        // console.log("✅ Admin logged in:", user.email); // avoid noisy production logging
         window.location.href = "admin.html"; // redirect
       } else {
         errorBox.innerText = "❌ Access denied. Not an admin.";

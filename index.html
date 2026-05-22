@@ -4,6 +4,19 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>MathWithMDU - Grade 10-12 Mathematical Literacy</title>
+  <meta name="description" content="MathWithMDU provides online support for Grade 10–12 Mathematical Literacy, including lessons, past papers, and plan-based access." />
+  <meta name="robots" content="index,follow" />
+  <link rel="canonical" href="index.html" />
+  <!-- OpenGraph -->
+  <meta property="og:title" content="MathWithMDU - Grade 10-12 Mathematical Literacy" />
+  <meta property="og:description" content="Online lessons and past papers for Grade 10–12 Mathematical Literacy." />
+  <meta property="og:type" content="website" />
+  <meta property="og:locale" content="en_US" />
+  <meta property="og:site_name" content="MathWithMDU" />
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="MathWithMDU - Grade 10-12 Mathematical Literacy" />
+  <meta name="twitter:description" content="Online lessons and past papers for Grade 10–12 Mathematical Literacy." />
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="assets/vendor/font-awesome/all.min.css" />
 
@@ -17,6 +30,8 @@
 
   <script type="module" src="app.js" defer></script>
 
+  <!-- CSP: block inline scripts, allow app scripts + Paystack -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'none'; style-src 'self' 'unsafe-inline'; script-src 'self' https://js.paystack.co; img-src 'self' data:; connect-src 'self' https://firestore.googleapis.com https://*.googleapis.com https://*.gstatic.com; font-src 'self' data:;"/>
 </head>
 <body>
   <nav class="navbar">
@@ -126,64 +141,7 @@
     </div>
   </footer>
 
-  <!-- Non-module scripts can stay as plain `type="text/javascript"` -->
-  <script>
-    // Redirect modal buttons to dedicated pages
-    const loginBtn = document.getElementById('loginBtn');
-    const registerBtn = document.getElementById('registerBtn');
-
-    loginBtn?.addEventListener('click', () => {
-      window.location.href = 'login.html';
-    });
-
-    registerBtn?.addEventListener('click', () => {
-      window.location.href = 'register.html';
-    });
-
-    const adminBtn = document.getElementById('adminBtn');
-    adminBtn?.addEventListener('click', () => {
-      window.location.href = 'admin.html';
-    });
-
-
-    // Cookie consent UI (local record only)
-    const consentBanner = document.getElementById('cookieConsentBanner');
-    const essentialBtn = document.getElementById('cookieEssentialBtn');
-    const acceptBtn = document.getElementById('cookieAcceptBtn');
-
-    const consentKey = 'mdu_cookie_consent';
-
-    function showBanner() {
-      if (!consentBanner) return;
-      consentBanner.classList.remove('hidden');
-    }
-
-    function hideBanner() {
-      if (!consentBanner) return;
-      consentBanner.classList.add('hidden');
-    }
-
-    function setConsent(value) {
-      try {
-        localStorage.setItem(consentKey, JSON.stringify({
-          value,
-          setAt: new Date().toISOString()
-        }));
-      } catch (_) {}
-      hideBanner();
-    }
-
-    try {
-      const stored = localStorage.getItem(consentKey);
-      if (!stored) showBanner();
-      else hideBanner();
-    } catch (_) {
-      showBanner();
-    }
-
-    essentialBtn?.addEventListener('click', () => setConsent('essential'));
-    acceptBtn?.addEventListener('click', () => setConsent('analytics'));
-  </script>
+  <script type="module" src="cookie-consent.js" defer></script>
 </body>
 </html>
 

@@ -53,7 +53,7 @@ if (adminLogin) {
   });
 }
 
-logoutBtn.addEventListener('click', () => {
+logoutBtn?.addEventListener('click', () => {
   signOut(auth);
 });
 
@@ -137,8 +137,9 @@ if (uploadForm) uploadForm.addEventListener('submit', async (e) => {
 
   uploadTask.on('state_changed', 
     (snapshot) => {
-      const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-      console.log('Upload is ' + progress + '% done');
+      // Avoid noisy upload progress logging in production.
+      // const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+      // console.log('Upload is ' + progress + '% done');
     },
     (error) => {
       showAlert('Upload failed: ' + error.message, 'error');

@@ -10,7 +10,7 @@ import {
 */
 
 document.addEventListener('DOMContentLoaded', () => {
-  console.log('[MathWithMDU] Home loaded');
+  // console.log('[MathWithMDU] Home loaded'); // avoid noisy production logging
 
   const loginBtn = document.getElementById('loginBtn');
   const registerBtn = document.getElementById('registerBtn');

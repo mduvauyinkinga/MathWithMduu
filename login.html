@@ -4,23 +4,38 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Login - MathWithMDU</title>
+  <meta name="description" content="Login to access your MathWithMDU Grade 10–12 Mathematical Literacy lessons, past papers, and student dashboard." />
+  <meta name="robots" content="index,follow" />
+  <link rel="canonical" href="login.html" />
+  <!-- OpenGraph -->
+  <meta property="og:title" content="Login - MathWithMDU" />
+  <meta property="og:description" content="Login to access your MathWithMDU Grade 10–12 Mathematical Literacy lessons and past papers." />
+  <meta property="og:type" content="website" />
+  <meta property="og:locale" content="en_US" />
+  <meta property="og:site_name" content="MathWithMDU" />
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Login - MathWithMDU" />
+  <meta name="twitter:description" content="Login to access your MathWithMDU Grade 10–12 Mathematical Literacy lessons and past papers." />
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="assets/vendor/font-awesome/all.min.css" />
 
   <!-- Favicon + mobile icons -->
-  <link rel="icon" type="image/png" sizes="32x32" href="assets/logo - blu-ish.png">
-  <link rel="apple-touch-icon" sizes="180x180" href="assets/logo - blu-ish.png">
+<link rel="icon" type="image/png" sizes="32x32" href="assets/logo%20-%20blu-ish.png">
+<link rel="apple-touch-icon" sizes="180x180" href="assets/logo%20-%20blu-ish.png">
 
   <script type="module" src="login.js" defer></script>
   <script type="module" src="theme.js" defer></script>
   <script src="navbar.js" defer></script>
 
+  <!-- CSP: block inline scripts, allow app scripts + Paystack -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'none'; style-src 'self' 'unsafe-inline'; script-src 'self' https://js.paystack.co; img-src 'self' data:; connect-src 'self' https://firestore.googleapis.com https://*.googleapis.com https://*.gstatic.com; font-src 'self' data:;"/>
 </head>
 <body>
   <nav class="navbar">
     <div class="nav-container">
           <a href="index.html" class="logo-link" aria-label="Go to home">
-            <img class="logo-img" src="assets/logo - blu-ish.png" alt="MathWithMDU logo"/>
+<img class="logo-img" src="assets/logo%20-%20blu-ish.png" alt="MathWithMDU logo"/>
           </a>
           <i class="fa-solid fa-drafting-compass mdu-icon" aria-hidden="true"></i>
       <div class="nav-wrapper">
@@ -124,41 +139,8 @@
     </div>
   </div>
 
-  <script>
-    // Cookie consent UI (local record only). Included across pages for POPIA accountability.
-    const consentBanner = document.getElementById('cookieConsentBanner');
-    const essentialBtn = document.getElementById('cookieEssentialBtn');
-    const acceptBtn = document.getElementById('cookieAcceptBtn');
-
-    const consentKey = 'mdu_cookie_consent';
-
-    function showBanner() { if (consentBanner) consentBanner.classList.remove('hidden'); }
-    function hideBanner() { if (consentBanner) consentBanner.classList.add('hidden'); }
-
-    function setConsent(value) {
-      try {
-        localStorage.setItem(consentKey, JSON.stringify({ value, setAt: new Date().toISOString() }));
-      } catch (_) {}
-      hideBanner();
-    }
-
-    try {
-      const stored = localStorage.getItem(consentKey);
-      if (!stored) showBanner();
-      else hideBanner();
-    } catch (_) { showBanner(); }
-
-    essentialBtn?.addEventListener('click', () => setConsent('essential'));
-    acceptBtn?.addEventListener('click', () => setConsent('analytics'));
-  </script>
-
-  <script type="module">
-    // Login/Register buttons redirect to dedicated pages.
-    const loginBtn = document.getElementById('loginBtn');
-    const registerBtn = document.getElementById('registerBtn');
-    loginBtn?.addEventListener('click', () => window.location.href = 'login.html');
-    registerBtn?.addEventListener('click', () => window.location.href = 'register.html');
-  </script>
+  <script src="cookie-consent.js" defer></script>
+  <script src="auth-redirect.js" defer></script>
 </body>
 </html>
 

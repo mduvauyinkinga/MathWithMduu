@@ -50,24 +50,33 @@ async function loadLessons() {
       q = query(collection(db, 'lessons'), orderBy('createdAt', 'desc'));
     }
     const snapshot = await getDocs(q);
-    lessonsList.innerHTML = '';
+
+    // Clear safely (no HTML parsing)
+    lessonsList.replaceChildren();
 
     if (snapshot.empty) {
-      lessonsList.innerHTML = '<p class="lesson-item">No lessons available yet. Check back soon or upgrade your plan!</p>';
+      const empty = document.createElement('p');
+      empty.className = 'lesson-item';
+      empty.textContent = 'No lessons available yet. Check back soon or upgrade your plan!';
+      lessonsList.appendChild(empty);
       return;
     }
+
+    const frag = document.createDocumentFragment();
 
     snapshot.forEach(doc => {
       const data = doc.data();
       const item = document.createElement('div');
       item.className = 'lesson-item';
-      // FIX: Avoid innerHTML with untrusted Firestore data (XSS hardening)
+
       const titleEl = document.createElement('h4');
       titleEl.textContent = data.title || '';
 
       const metaEl = document.createElement('p');
-      metaEl.innerHTML = `<strong>Grade ${data.grade} Term ${data.term} Week ${data.week}:</strong> `;
-      metaEl.append(document.createTextNode(data.topic || ''));
+      const strong = document.createElement('strong');
+      strong.textContent = `Grade ${data.grade} Term ${data.term} Week ${data.week}:`;
+      metaEl.append(strong);
+      metaEl.append(document.createTextNode(' ' + (data.topic || '')));
 
       const descEl = document.createElement('p');
       descEl.textContent = data.description || '';
@@ -77,13 +86,26 @@ async function loadLessons() {
       a.target = '_blank';
       a.rel = 'noopener noreferrer';
       a.href = data.fileURL || '#';
-      a.innerHTML = '<i class="fa-solid fa-file-arrow-down mdu-icon" aria-hidden="true"></i>Download Lesson'; // emoji -> FA icon
+
+      const icon = document.createElement('i');
+      icon.className = 'fa-solid fa-file-arrow-down mdu-icon';
+      icon.setAttribute('aria-hidden', 'true');
+
+      const text = document.createTextNode('Download Lesson');
+
+      a.append(icon, text);
 
       item.append(titleEl, metaEl, descEl, a);
-      lessonsList.appendChild(item);
+      frag.appendChild(item);
     });
+
+    lessonsList.appendChild(frag);
   } catch (error) {
-    lessonsList.innerHTML = '<p class="lesson-item restricted">Error loading lessons. Try refreshing.</p>';
+    lessonsList.replaceChildren();
+    const err = document.createElement('p');
+    err.className = 'lesson-item restricted';
+    err.textContent = 'Error loading lessons. Try refreshing.';
+    lessonsList.appendChild(err);
     console.error('Lessons error:', error);
   }
 }
@@ -97,37 +119,58 @@ async function loadPapers() {
       q = query(collection(db, 'past_papers'), orderBy('createdAt', 'desc'));
     }
     const snapshot = await getDocs(q);
-    papersList.innerHTML = '';
+
+    papersList.replaceChildren();
 
     if (snapshot.empty) {
-      papersList.innerHTML = '<p class="lesson-item">No past papers available yet. Check back soon!</p>';
+      const empty = document.createElement('p');
+      empty.className = 'lesson-item';
+      empty.textContent = 'No past papers available yet. Check back soon!';
+      papersList.appendChild(empty);
       return;
     }
+
+    const frag = document.createDocumentFragment();
 
     snapshot.forEach(doc => {
       const data = doc.data();
       const item = document.createElement('div');
       item.className = 'lesson-item';
-      // FIX: Avoid innerHTML with untrusted Firestore data (XSS hardening)
+
       const titleEl = document.createElement('h4');
       titleEl.textContent = data.title || '';
 
       const metaEl = document.createElement('p');
-      metaEl.innerHTML = `<strong>Grade ${data.grade}:</strong> `;
-      metaEl.append(document.createTextNode(data.topic || ''));
+      const strong = document.createElement('strong');
+      strong.textContent = `Grade ${data.grade}:`;
+      metaEl.append(strong);
+      metaEl.append(document.createTextNode(' ' + (data.topic || '')));
 
       const a = document.createElement('a');
       a.className = 'download-btn';
       a.target = '_blank';
       a.rel = 'noopener noreferrer';
       a.href = data.fileURL || '#';
-      a.innerHTML = '<i class="fa-solid fa-file-arrow-down mdu-icon" aria-hidden="true"></i>Download Paper'; // emoji -> FA icon
+
+      const icon = document.createElement('i');
+      icon.className = 'fa-solid fa-file-arrow-down mdu-icon';
+      icon.setAttribute('aria-hidden', 'true');
+
+      const text = document.createTextNode('Download Paper');
+
+      a.append(icon, text);
 
       item.append(titleEl, metaEl, a);
-      papersList.appendChild(item);
+      frag.appendChild(item);
     });
+
+    papersList.appendChild(frag);
   } catch (error) {
-    papersList.innerHTML = '<p class="lesson-item restricted">Error loading papers. Try refreshing.</p>';
+    papersList.replaceChildren();
+    const err = document.createElement('p');
+    err.className = 'lesson-item restricted';
+    err.textContent = 'Error loading papers. Try refreshing.';
+    papersList.appendChild(err);
     console.error('Papers error:', error);
   }
 }
@@ -136,18 +179,23 @@ async function loadAnnouncements() {
   try {
     const q = query(collection(db, 'announcements'), orderBy('date', 'desc'));
     const snapshot = await getDocs(q);
-    announcementsList.innerHTML = '';
+
+    announcementsList.replaceChildren();
 
     if (snapshot.empty) {
-      announcementsList.innerHTML = '<p>No announcements yet. Check WhatsApp for updates!</p>';
+      const empty = document.createElement('p');
+      empty.textContent = 'No announcements yet. Check WhatsApp for updates!';
+      announcementsList.appendChild(empty);
       return;
     }
+
+    const frag = document.createDocumentFragment();
 
     snapshot.forEach(doc => {
       const data = doc.data();
       const item = document.createElement('div');
       item.className = 'lesson-item';
-      // FIX: Avoid innerHTML with untrusted Firestore data (XSS hardening)
+
       const h4 = document.createElement('h4');
       h4.textContent = data.message || '';
       item.appendChild(h4);
@@ -162,10 +210,15 @@ async function loadAnnouncements() {
         item.appendChild(a);
       }
 
-      announcementsList.appendChild(item);
+      frag.appendChild(item);
     });
+
+    announcementsList.appendChild(frag);
   } catch (error) {
-    announcementsList.innerHTML = '<p>Error loading announcements.</p>';
+    announcementsList.replaceChildren();
+    const err = document.createElement('p');
+    err.textContent = 'Error loading announcements.';
+    announcementsList.appendChild(err);
     console.error('Announcements error:', error);
   }
 }

@@ -20,8 +20,12 @@ const PAYSTACK_KEY = (typeof window !== 'undefined' &&
   ? window.__ENV__.PAYSTACK_KEY
   : '';
 
-if (!PAYSTACK_KEY) {
+const PAYSTACK_KEY_MISSING = !PAYSTACK_KEY;
+
+if (PAYSTACK_KEY_MISSING) {
   console.warn('[MathWithMDU] PAYSTACK_KEY missing. Payments will be disabled.');
+  // Hard-disable payment buttons until a valid key is present.
+  payBtns.forEach(btn => { btn.disabled = true; });
 }
 
 let currentUser = null;
@@ -115,6 +119,12 @@ payBtns.forEach((btn) => {
     // Prevent double click / duplicate iframes.
     if (inFlight.get(btn)) return;
 
+    // If config isn't present, fail safely (don't attempt Paystack.setup with empty key).
+    if (PAYSTACK_KEY_MISSING) {
+      showAlert('Payments are temporarily unavailable (missing Paystack configuration).', 'error');
+      return;
+    }
+
     /*
     |--------------------------------------------------------------------------
     | CHECK LOGIN
@@ -207,7 +217,8 @@ payBtns.forEach((btn) => {
 
         callback: function (response) {
           const ref = response?.reference;
-          console.log('Payment successful:', response);
+          // Avoid noisy production logging of full Paystack response.
+          // console.log('Payment successful:', response);
 
           showAlert(
             `Payment successful! Reference: ${ref || 'N/A'}. Activating your subscription...`,
