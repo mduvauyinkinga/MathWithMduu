@@ -43,7 +43,14 @@ export const storage = getStorage(app);
 const loginForm = document.getElementById("adminLoginForm");
 const errorBox = document.getElementById("loginError");
 
-if (loginForm) {
+// Guard: only attach this handler when the admin login button is meant to submit the form.
+// On admin.html the login button is type="button" and admin.js handles login via click.
+// Prevents double-handling / unexpected redirect/signOut.
+const adminLoginBtn = document.getElementById("adminLogin");
+const isSubmitButton =
+  !!adminLoginBtn && (adminLoginBtn.getAttribute("type") || "").toLowerCase() === "submit";
+
+if (loginForm && isSubmitButton) {
   loginForm.addEventListener("submit", async (e) => {
     e.preventDefault();
     const email = document.getElementById("adminEmail").value;
